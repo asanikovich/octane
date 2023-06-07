@@ -51,13 +51,13 @@ class RoadRunnerServerProcessInspectorTest extends TestCase
     public function test_roadrunner_server_process_can_be_reloaded()
     {
         $inspector = new ServerProcessInspector(
-            $processIdFile = new ServerStateFile(sys_get_temp_dir().'/swoole.pid'),
+            $processIdFile = new ServerStateFile(sys_get_temp_dir().'/rr.pid'),
             $processFactory = Mockery::mock(SymfonyProcessFactory::class),
             new PosixExtension
         );
 
         $processIdFile->writeState([
-            'host' => '127.0.0.1',
+            'rpcHost' => '127.0.0.1',
             'rpcPort' => '6002',
         ]);
 

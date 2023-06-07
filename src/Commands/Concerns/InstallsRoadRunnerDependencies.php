@@ -2,6 +2,7 @@
 
 namespace Laravel\Octane\Commands\Concerns;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Laravel\Octane\RoadRunner\Concerns\FindsRoadRunnerBinary;
 use RuntimeException;
@@ -10,6 +11,7 @@ use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 trait InstallsRoadRunnerDependencies
@@ -44,13 +46,13 @@ trait InstallsRoadRunnerDependencies
             return true;
         }
 
-        if (! $this->confirm('Octane requires "spiral/roadrunner-http:^3.0.1" and "spiral/roadrunner-cli:^2.5.0". Do you wish to install them as a dependencies?')) {
-            $this->error('Octane requires "spiral/roadrunner-http" and "spiral/roadrunner-cli".');
+        if (! $this->confirm('Octane requires "spiral/roadrunner-http:^3.0.1", "spiral/roadrunner-cli:^2.5.0" and "spiral/roadrunner-kv:^4.0.0". Do you wish to install them as a dependencies?')) {
+            $this->error('Octane requires "spiral/roadrunner-http", "spiral/roadrunner-cli" and "spiral/roadrunner-kv".');
 
             return false;
         }
 
-        $command = $this->findComposer().' require spiral/roadrunner-http:^3.0.1 spiral/roadrunner-cli:^2.5.0 --with-all-dependencies';
+        $command = $this->findComposer().' require spiral/roadrunner-http:^3.0.1 spiral/roadrunner-cli:^2.5.0 spiral/roadrunner-kv:^4.0.0 --with-all-dependencies';
 
         $process = Process::fromShellCommandline($command, null, null, null, null);
 
@@ -152,6 +154,20 @@ trait InstallsRoadRunnerDependencies
 
             unlink("$roadRunnerBinary.backup");
         }
+    }
+
+    protected function ensureRoadRunnerConfigMeetsRequirements(string $rrYamlPath): ?string
+    {
+        $config = Yaml::parseFile($rrYamlPath);
+        dump($config);
+        $key = config('octane.roadrunner.cache.key', 'default');
+        $driver = Arr::get($config, sprintf('kv.%s.driver', $key));
+
+        if (empty($driver)) {
+            return sprintf('To use laravel cache please config in ".rr.yaml" kv storage with key "%s"', $key);
+        }
+
+        return null;
     }
 
     /**
