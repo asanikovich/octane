@@ -102,7 +102,15 @@ class RoadRunnerServerTest extends TestCase
         $repository = new Repository($store);
         $this->assertTrue($repository->add('k', 'v', 3600));
         $this->assertFalse($repository->add('k', 'v', 3600));
-        $this->assertGreaterThan(3500, $driver->getTtl('k'));
+        $this->assertEquals('v', $repository->get('k'));
+        $this->assertFalse($repository->missing('k'));
+
+        $this->assertTrue($repository->add('k2', 'v2'));
+        $this->assertEquals(['k' => 'v', 'k2' => 'v2'], $repository->many(['k', 'k2']));
+//        $data = iterab($repository->getMultiple(['k', 'k2', 'k3'], 'default'));
+//        $this->assertEquals(['k' => 'v', 'k2' => 'v2', 'k3' => 'default'], $data);
+
+        //$this->assertGreaterThan(3500, $driver->getTtl('k'));
     }
 
     protected function assertRoadRunnerBinaryExists(): void

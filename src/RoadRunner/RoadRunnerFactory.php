@@ -19,7 +19,9 @@ final class RoadRunnerFactory
 
     public static function createRPC(): RPCInterface
     {
-        return RPC::create(sprintf('tcp://%s:%s', config('octane.roadrunner.rpc.host'), config('octane.roadrunner.rpc.port')));
+        return RPC::create(
+            sprintf('tcp://%s:%s', config('octane.roadrunner.rpc.host'), config('octane.roadrunner.rpc.port'))
+        );
     }
 
     public static function createCacheStorage(RPCInterface $rpc): StorageInterface
