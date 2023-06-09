@@ -34,11 +34,6 @@ jobs:
         run: |
           composer create-project laravel/laravel laravel
 
-      - name: Install RoadRunner Binary
-        working-directory: ./laravel
-        run: |
-          docker run --rm -v ${PWD}:/rootfs:rw --entrypoint "" spiralscout/roadrunner:${{ matrix.rr }} cp /usr/bin/rr /rootfs/rr
-
       - name: Setup laravel with local octane repository
         working-directory: ./laravel
         run: |

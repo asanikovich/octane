@@ -52,6 +52,9 @@ class RoadRunnerServerTest extends TestCase
             '--log-level=debug',
         ]);
 
+        exec('cat laravel/.rr.yaml', $output);
+        dump($output);
+
         $cmd = implode(' ', [
             (new PhpExecutableFinder)->find(),
             $this->path.'/artisan',
