@@ -159,7 +159,6 @@ trait InstallsRoadRunnerDependencies
     protected function ensureRoadRunnerConfigMeetsRequirements(string $rrYamlPath): ?string
     {
         $config = Yaml::parseFile($rrYamlPath);
-        dump($config);
         $key = config('octane.roadrunner.cache.key', 'default');
         $driver = Arr::get($config, sprintf('kv.%s.driver', $key));
 

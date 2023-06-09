@@ -52,23 +52,6 @@ class RoadRunnerServerTest extends TestCase
             '--log-level=debug',
         ]);
 
-        exec('cat laravel/.rr.yaml', $output);
-        dump($output);
-
-        $cmd = implode(' ', [
-            (new PhpExecutableFinder)->find(),
-            $this->path.'/artisan',
-            'octane:start',
-            '--server=roadrunner',
-            '--host=127.0.0.1',
-            '--port=22622',
-            '--workers=1',
-            '--task-workers=1',
-            '--log-level=debug',
-        ]);
-        exec($cmd, $output);
-        dump($output);
-
         $httpClient = new Guzzle(['base_uri' => 'http://127.0.0.1:22622']);
 
         // to preventing child process blocking <https://www.php.net/manual/ru/function.proc-open.php#38870>
